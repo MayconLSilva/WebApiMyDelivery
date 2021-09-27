@@ -22,38 +22,51 @@ namespace WebAPIMyDelivery
             _config = configuration;
         }
 
-        [HttpGet("todos")]
-        public IEnumerable<ModelCliente> GetEstados()
+        [HttpGet("all")]
+        public IEnumerable<ModelCliente> GetClientes()
         {
             using (SqlConnection conexao = new SqlConnection(
-            _config.GetConnectionString("ExemplosDapper")))
+            _config.GetConnectionString("DefaultConnection")))
             {
                 return conexao.Query<ModelCliente>(
-                "SELECT E.SiglaEstado, E.NomeEstado, E.NomeCapital, " +
-                "R.NomeRegiao " +
-                "FROM dbo.Estados E " +
-                "INNER JOIN dbo.Regioes R ON R.IdRegiao = E.IdRegiao " +
-                "ORDER BY E.NomeEstado");
+                "select *from cliente");
+
+                //return conexao.GetAll<Estado>();
             }
         }
 
-        [HttpGet("dd")]
-        public System.Web.Http.IHttpActionResult gettets()
+        [HttpGet("detalhes/{parametro}")]
+        public IEnumerable<ModelCliente> GetClienteID(string parametro)
         {
             using (SqlConnection conexao = new SqlConnection(
-            _config.GetConnectionString("ExemplosDapper")))
+            _config.GetConnectionString("DefaultConnection")))
             {
-                var ersultado = conexao.Query<ModelCliente>(
-                "SELECT E.SiglaEstado, E.NomeEstado, E.NomeCapital, " +
-                "R.NomeRegiao " +
-                "FROM dbo.Estados E " +
-                "INNER JOIN dbo.Regioes R ON R.IdRegiao = E.IdRegiao " +
-                "ORDER BY E.NomeEstado");
+                return conexao.Query<ModelCliente>(
+                $"select *from cliente where id = {parametro}");
                 
-                return (System.Web.Http.IHttpActionResult)ersultado;
+                
+                //return conexao.Get<ModelCliente>(parametro);
+            }
+        }
+
+        [HttpPost]
+        public IEnumerable<ModelCliente> PostCliente(ModelCliente modelCliente)
+        {
+            using (SqlConnection conexao = new SqlConnection(
+            _config.GetConnectionString("DefaultConnection")))
+            {
+                return conexao.Query<ModelCliente>(
+                $@"select *from cliente where id = ", new Dictionary<object, string>()
+                                    {{"",""},
+                                     {"",""}
+                                    });
+
+
+                //return conexao.Get<ModelCliente>(parametro);
             }
 
         }
+
 
     }
 }
