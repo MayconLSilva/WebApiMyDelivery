@@ -22,18 +22,18 @@ namespace WebAPIMyDelivery
             _config = configuration;
         }
 
-        [HttpGet("all")]
-        public IEnumerable<ModelCliente> GetClientes()
-        {
-            using (SqlConnection conexao = new SqlConnection(
-            _config.GetConnectionString("DefaultConnection")))
-            {
-                return conexao.Query<ModelCliente>(
-                "select *from cliente");
+        //[HttpGet("all")]
+        //public IEnumerable<ModelCliente> GetClientes()
+        //{
+        //    using (SqlConnection conexao = new SqlConnection(
+        //    _config.GetConnectionString("DefaultConnection")))
+        //    {
+        //        return conexao.Query<ModelCliente>(
+        //        "select *from cliente");
 
-                //return conexao.GetAll<Estado>();
-            }
-        }
+        //        //return conexao.GetAll<Estado>();
+        //    }
+        //}
 
         [HttpGet("detalhes/{parametro}")]
         public IEnumerable<ModelCliente> GetClienteID(string parametro)
@@ -49,24 +49,49 @@ namespace WebAPIMyDelivery
             }
         }
 
-        [HttpPost]
-        public IEnumerable<ModelCliente> PostCliente(ModelCliente modelCliente)
+        //[HttpPost]
+        //public IEnumerable<ModelCliente> PostCliente(ModelCliente modelCliente)
+        //{
+        //    using (SqlConnection conexao = new SqlConnection(
+        //    _config.GetConnectionString("DefaultConnection")))
+        //    {
+        //        return conexao.Query<ModelCliente>(
+        //        $@"select *from cliente where id = ", new Dictionary<object, string>()
+        //                            {{"",""},
+        //                             {"",""}
+        //                            });
+
+
+        //        //return conexao.Get<ModelCliente>(parametro);
+        //    }
+
+        //}
+
+
+        [HttpGet("all")]
+        public IActionResult RetornaListaClientes()
         {
-            using (SqlConnection conexao = new SqlConnection(
-            _config.GetConnectionString("DefaultConnection")))
+            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
             {
-                return conexao.Query<ModelCliente>(
-                $@"select *from cliente where id = ", new Dictionary<object, string>()
-                                    {{"",""},
-                                     {"",""}
-                                    });
+                try
+                {
+                    var resultClientes = connection.Query<ModelCliente>("select *from cliente");
 
+                    if (resultClientes == null)
+                    {
+                        return NoContent();
+                    }
+                    else
+                    {
+                        return Ok(resultClientes);
+                    }
 
-                //return conexao.Get<ModelCliente>(parametro);
-            }
-
+                }
+                catch (Exception ex)
+                {                    
+                    return StatusCode(500, ex);// StatusCode((int)HttpStatusCode.InternalServerError, e);
+                }
+            }            
         }
-
-
     }
 }
