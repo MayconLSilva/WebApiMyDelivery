@@ -19,6 +19,8 @@ namespace WebAPIMyDelivery
         public string telefone { get; set; }
         public string celular { get; set; }
         public string email { get; set; }
+        public DateTime ? dataCadastro { get; set; }
+        public DateTime ? dataAlteracao { get; set; }
 
     }
 }

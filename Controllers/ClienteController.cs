@@ -15,6 +15,7 @@ namespace WebAPIMyDelivery
     [Route("[controller]")]
     public class ClienteController : Controller
     {
+        ClienteBLL clienteBLL = new ClienteBLL();
 
         private IConfiguration _config;
         public ClienteController(IConfiguration configuration)
@@ -35,8 +36,8 @@ namespace WebAPIMyDelivery
         //    }
         //}
 
-        [HttpGet("detalhes/{parametro}")]
-        public IEnumerable<ModelCliente> GetClienteID(string parametro)
+        [HttpGet("detalhes/{parametro}/{parametro2}")]
+        public IEnumerable<ModelCliente> GetClienteID(string parametro,string parametro2)
         {
             using (SqlConnection conexao = new SqlConnection(
             _config.GetConnectionString("DefaultConnection")))
@@ -71,27 +72,106 @@ namespace WebAPIMyDelivery
         [HttpGet("all")]
         public IActionResult RetornaListaClientes()
         {
-            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
+            try
             {
-                try
+                using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
                 {
-                    var resultClientes = connection.Query<ModelCliente>("select *from cliente");
-
-                    if (resultClientes == null)
+                    try
                     {
-                        return NoContent();
-                    }
-                    else
-                    {
-                        return Ok(resultClientes);
-                    }
+                        var resultClientes = connection.Query<ModelCliente>("select *from cliente");
 
+                        if (resultClientes == null)
+                        {
+                            return NoContent();
+                        }
+                        else
+                        {
+                            return Ok(resultClientes);
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        return StatusCode(500, ex);
+                    }
                 }
-                catch (Exception ex)
-                {                    
-                    return StatusCode(500, ex);// StatusCode((int)HttpStatusCode.InternalServerError, e);
-                }
-            }            
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);//StatusCode((int)HttpStatusCode.InternalServerError, ex);
+
+            }                        
         }
+
+        [HttpGet("salesman/{parametro}")]
+        public IActionResult RetornaListaClientesPorVendedor(int parametro)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
+                {
+                    try
+                    {
+                        var resultClientes = clienteBLL.RetornaListaClientes(connection,parametro,null);
+
+                        if (resultClientes == null)
+                        {
+                            return NoContent();
+                        }
+                        else
+                        {
+                            return Ok(resultClientes);
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        return StatusCode(500, ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+
+            }
+        }
+
+        //[HttpGet("salesman/Date/{parametro}/{parametro2}")]
+        [HttpGet("salesman/{parametro}/Date/{parametro2}")]
+        public IActionResult RetornaListaClientesPorVendedorDataCadastroAlteracao(int parametro,DateTime parametro2)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
+                {
+                    try
+                    {
+                        var resultClientes = clienteBLL.RetornaListaClientes(connection, parametro, parametro2);
+
+                        if (resultClientes == null)
+                        {
+                            return NoContent();
+                        }
+                        else
+                        {
+                            return Ok(resultClientes);
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        return StatusCode(500, ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+
+            }
+        }
+
+
     }
 }
