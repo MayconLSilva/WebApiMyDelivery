@@ -50,23 +50,7 @@ namespace WebAPIMyDelivery
             }
         }
 
-        //[HttpPost]
-        //public IEnumerable<ModelCliente> PostCliente(ModelCliente modelCliente)
-        //{
-        //    using (SqlConnection conexao = new SqlConnection(
-        //    _config.GetConnectionString("DefaultConnection")))
-        //    {
-        //        return conexao.Query<ModelCliente>(
-        //        $@"select *from cliente where id = ", new Dictionary<object, string>()
-        //                            {{"",""},
-        //                             {"",""}
-        //                            });
-
-
-        //        //return conexao.Get<ModelCliente>(parametro);
-        //    }
-
-        //}
+       
 
 
         [HttpGet("all")]
@@ -137,7 +121,6 @@ namespace WebAPIMyDelivery
             }
         }
 
-        //[HttpGet("salesman/Date/{parametro}/{parametro2}")]
         [HttpGet("salesman/{parametro}/Date/{parametro2}")]
         public IActionResult RetornaListaClientesPorVendedorDataCadastroAlteracao(int parametro,DateTime parametro2)
         {
@@ -172,6 +155,38 @@ namespace WebAPIMyDelivery
             }
         }
 
+        [HttpGet("Date/{parametro}")]
+        public IActionResult RetornaListaClientesPorDataCadastroAlteracao(DateTime parametro)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
+                {
+                    try
+                    {
+                        var resultClientes = clienteBLL.RetornaListaClientes(connection, null, parametro);
 
+                        if (resultClientes == null)
+                        {
+                            return NoContent();
+                        }
+                        else
+                        {
+                            return Ok(resultClientes);
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        return StatusCode(500, ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+
+            }
+        }
     }
 }

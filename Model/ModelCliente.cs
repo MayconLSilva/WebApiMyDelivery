@@ -9,8 +9,8 @@ namespace WebAPIMyDelivery
 {
     [Table("Cliente")]
     public class ModelCliente
-    {
-        [ExplicitKey]
+    {        
+        [Key]
         public int id { get; set; }
         public string nomeFantasia { get; set; }
         public string apelidoRazao { get; set; }
