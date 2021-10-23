@@ -53,7 +53,31 @@ namespace WebAPIMyDelivery
 
 
 
+        [HttpPost("insert")]
+        public IActionResult InserirCliente(ModelCliente objCliente)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
+                {
+                    try
+                    {
+                        var resultClientes = clienteBLL.InserirCliente(connection, objCliente, out string erro);
 
+                        return Ok(resultClientes);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        return StatusCode(500, ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }            
+        }
         
 
         [HttpGet("address/all")]

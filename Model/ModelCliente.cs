@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using System.Text.Json.Serialization;
 
 namespace WebAPIMyDelivery
 {
@@ -19,9 +20,9 @@ namespace WebAPIMyDelivery
         public string telefone { get; set; }
         public string celular { get; set; }
         public string email { get; set; }
-        public DateTime ? dataCadastro { get; set; }
+        public DateTime ? dataCadastro { get; set; }        
         public DateTime ? dataAlteracao { get; set; }
-        
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public List<ModelEnderecoCliente> Enderecos { get; set; }
     }
 }

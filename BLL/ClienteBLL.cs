@@ -91,7 +91,36 @@ namespace WebAPIMyDelivery
             }
         }
         
+        public int InserirCliente(SqlConnection connection, ModelCliente objCliente, out string erro)
+        {
+            erro = string.Empty;
 
+            try
+            {
+                string sql = $@"insert into cliente (nomeFantasia,apelidoRazao,cpfCnpj,rgIE,telefone,celular,email,dataCadastro)
+                                                                values (@nomeFantasia, @apelidoRazao, @cpfCnpj, @rgIE, @telefone, @celular, @email, @dataCadastro);
+                                                                SELECT CAST(SCOPE_IDENTITY() as int) ";
+
+                var resultClientes = connection.Query<int>(sql,
+                                                        new Dictionary<string, object>() { { "@nomeFantasia", objCliente.nomeFantasia.ToString() },
+                                                                                                   { "@apelidoRazao", objCliente.apelidoRazao.ToString() },
+                                                                                                   { "@cpfCnpj", objCliente.cpfCnpj.ToString() },
+                                                                                                   { "@rgIE", objCliente.rgIE.ToString() },
+                                                                                                   { "@telefone", objCliente.telefone.ToString() },
+                                                                                                   { "@celular", objCliente.celular.ToString() },
+                                                                                                   { "@email", objCliente.email.ToString() },
+                                                                                                   { "@dataCadastro", objCliente.dataCadastro.Value.Date } });
+                Int32 idRetorno = Convert.ToInt32(resultClientes.Single());                
+
+                return idRetorno;
+
+            }
+            catch(Exception ex)
+            {
+                erro = "Erro ao inserir cliente! " + ex;
+                return 0;
+            }
+        }
 
 
     }
