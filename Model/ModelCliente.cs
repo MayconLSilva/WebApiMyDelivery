@@ -21,7 +21,8 @@ namespace WebAPIMyDelivery
         public string email { get; set; }
         public DateTime ? dataCadastro { get; set; }
         public DateTime ? dataAlteracao { get; set; }
-
+        
+        public List<ModelEnderecoCliente> Enderecos { get; set; }
     }
 }
 

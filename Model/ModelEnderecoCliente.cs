@@ -14,7 +14,7 @@ namespace WebAPIMyDelivery
     {
         //[DisplayFormat(DataFormatString = "mm/dd/yyyy")]
         [Key]
-        public int id { get; set; }
+        public int idEndereco { get; set; }
         //[Required(ErrorMessage = "O nome do usuário é obrigatório", AllowEmptyStrings = false)]
         //[Display(Name = "Nome do Usuário")]
         //[StringLength(8, ErrorMessage = "Name length can't be more than 8.")]
@@ -28,5 +28,7 @@ namespace WebAPIMyDelivery
         [Required]         
         public  int idCliente { get; set; }
         public string cidade { get; set; }
+
+        
     }
 }

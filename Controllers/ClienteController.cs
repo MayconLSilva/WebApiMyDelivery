@@ -7,6 +7,7 @@ using Dapper;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using Microsoft.Data.SqlClient;
+using Slapper;
 //using System.Web.Http;
 
 namespace WebAPIMyDelivery
@@ -37,21 +38,66 @@ namespace WebAPIMyDelivery
         //}
 
         [HttpGet("detalhes/{parametro}/{parametro2}")]
-        public IEnumerable<ModelCliente> GetClienteID(string parametro,string parametro2)
+        public IEnumerable<ModelCliente> GetClienteID(string parametro, string parametro2)
         {
             using (SqlConnection conexao = new SqlConnection(
             _config.GetConnectionString("DefaultConnection")))
             {
                 return conexao.Query<ModelCliente>(
                 $"select *from cliente where id = {parametro}");
-                
-                
+
+
                 //return conexao.Get<ModelCliente>(parametro);
             }
         }
 
-       
 
+
+
+        
+
+        [HttpGet("address/all")]
+        public IActionResult RetornaListaClientesComplementar()
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
+                {
+                    try
+                    {
+                        var resultClientes = connection.Query<dynamic>($@"select c.id, c.nomeFantasia, c.apelidoRazao, c.cpfCnpj, c.rgIE, c.telefone, c.celular,
+                                                                           c.email, c.dataCadastro, c.dataAlteracao, ec.idEndereco as Enderecos_idEndereco, 
+	                                                                       ec.logradouro as Enderecos_logradouro, ec.numero as Enderecos_numero,
+	                                                                       ec.bairro as Enderecos_bairro, ec.cep as Enderecos_cep, ec.complemento as Enderecos_complemento, 
+	                                                                       ec.principal as Enderecos_principal, ec.idCliente as Enderecos_idCliente, 
+	                                                                       ec.cidade as Enderecos_cidade
+	                                                                       from cliente c
+	                                                                       inner join enderecosCliente ec on ec.idCliente = c.id
+	                                                                       where 1 = 1");
+
+                        AutoMapper.Configuration.AddIdentifier(typeof(ModelCliente), "id");
+                        AutoMapper.Configuration.AddIdentifier(typeof(ModelEnderecoCliente), "idEndereco");
+
+                        List<ModelCliente> clientes = (AutoMapper.MapDynamic<ModelCliente>(resultClientes) as IEnumerable<ModelCliente>).ToList();
+
+                        if(clientes.Count != 0)                        
+                            return Ok(clientes);                        
+                        else
+                            return NoContent();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        return StatusCode(500,ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+
+            }
+        }
 
         [HttpGet("all")]
         public IActionResult RetornaListaClientes()
@@ -84,7 +130,7 @@ namespace WebAPIMyDelivery
             {
                 return StatusCode(500, ex);//StatusCode((int)HttpStatusCode.InternalServerError, ex);
 
-            }                        
+            }
         }
 
         [HttpGet("salesman/{parametro}")]
@@ -96,7 +142,7 @@ namespace WebAPIMyDelivery
                 {
                     try
                     {
-                        var resultClientes = clienteBLL.RetornaListaClientes(connection,parametro,null);
+                        var resultClientes = clienteBLL.RetornaListaClientes(connection, parametro, null);
 
                         if (resultClientes == null)
                         {
@@ -122,7 +168,7 @@ namespace WebAPIMyDelivery
         }
 
         [HttpGet("salesman/{parametro}/Date/{parametro2}")]
-        public IActionResult RetornaListaClientesPorVendedorDataCadastroAlteracao(int parametro,DateTime parametro2)
+        public IActionResult RetornaListaClientesPorVendedorDataCadastroAlteracao(int parametro, DateTime parametro2)
         {
             try
             {
