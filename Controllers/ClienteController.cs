@@ -64,26 +64,17 @@ namespace WebAPIMyDelivery
                 using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
                 {
                     try
-                    {
-                        var resultClientes = connection.Query<dynamic>($@"select c.id, c.nomeFantasia, c.apelidoRazao, c.cpfCnpj, c.rgIE, c.telefone, c.celular,
-                                                                           c.email, c.dataCadastro, c.dataAlteracao, ec.idEndereco as Enderecos_idEndereco, 
-	                                                                       ec.logradouro as Enderecos_logradouro, ec.numero as Enderecos_numero,
-	                                                                       ec.bairro as Enderecos_bairro, ec.cep as Enderecos_cep, ec.complemento as Enderecos_complemento, 
-	                                                                       ec.principal as Enderecos_principal, ec.idCliente as Enderecos_idCliente, 
-	                                                                       ec.cidade as Enderecos_cidade
-	                                                                       from cliente c
-	                                                                       inner join enderecosCliente ec on ec.idCliente = c.id
-	                                                                       where 1 = 1");
+                    {                        
+                        var retultClientes = clienteBLL.RetornaListaClientesEndereco(connection, null, null);
 
-                        AutoMapper.Configuration.AddIdentifier(typeof(ModelCliente), "id");
-                        AutoMapper.Configuration.AddIdentifier(typeof(ModelEnderecoCliente), "idEndereco");
-
-                        List<ModelCliente> clientes = (AutoMapper.MapDynamic<ModelCliente>(resultClientes) as IEnumerable<ModelCliente>).ToList();
-
-                        if(clientes.Count != 0)                        
-                            return Ok(clientes);                        
-                        else
+                        if (retultClientes == null || retultClientes.Count == 0)
+                        {
                             return NoContent();
+                        }
+                        else
+                        {
+                            return Ok(retultClientes);
+                        }
 
                     }
                     catch (Exception ex)
@@ -135,14 +126,14 @@ namespace WebAPIMyDelivery
 
         [HttpGet("salesman/{parametro}")]
         public IActionResult RetornaListaClientesPorVendedor(int parametro)
-        {
+        {            
             try
             {
                 using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
                 {
                     try
                     {
-                        var resultClientes = clienteBLL.RetornaListaClientes(connection, parametro, null);
+                        var resultClientes = clienteBLL.RetornaListaClientes(connection, parametro, null, out string erros);
 
                         if (resultClientes == null)
                         {
@@ -176,7 +167,7 @@ namespace WebAPIMyDelivery
                 {
                     try
                     {
-                        var resultClientes = clienteBLL.RetornaListaClientes(connection, parametro, parametro2);
+                        var resultClientes = clienteBLL.RetornaListaClientes(connection, parametro, parametro2, out string erros);
 
                         if (resultClientes == null)
                         {
@@ -210,7 +201,7 @@ namespace WebAPIMyDelivery
                 {
                     try
                     {
-                        var resultClientes = clienteBLL.RetornaListaClientes(connection, null, parametro);
+                        var resultClientes = clienteBLL.RetornaListaClientes(connection, null, parametro, out string erros);
 
                         if (resultClientes == null)
                         {
