@@ -79,6 +79,60 @@ namespace WebAPIMyDelivery
             }            
         }
         
+        [HttpPut("update/{parametro}")]
+        public IActionResult AtualizaCliente(int parametro,ModelCliente objCliente)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
+                {
+                    try
+                    {
+                        clienteBLL.AtualizarCliente(connection, parametro,objCliente, out string erro);
+
+                        return Ok();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        return StatusCode(500, ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+        }
+
+        [HttpDelete("delete/{parametro}")]
+        public IActionResult DeletarCliente(int parametro)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
+                {
+                    try
+                    {
+                        clienteBLL.DeletarCliente(connection, parametro, out string erro);
+
+                        if (erro == "")
+                            return Ok();
+                        else
+                            return BadRequest(erro);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        return StatusCode(500, ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex);
+            }
+        }
 
         [HttpGet("address/all")]
         public IActionResult RetornaListaClientesComplementar()

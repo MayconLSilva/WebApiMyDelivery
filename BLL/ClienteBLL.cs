@@ -122,6 +122,52 @@ namespace WebAPIMyDelivery
             }
         }
 
+        public void AtualizarCliente(SqlConnection connection, int parametro ,ModelCliente objCliente, out string erro)
+        {
+            erro = string.Empty;
+            try
+            {
+                DateTime dataAtual = DateTime.Now;
+                DateTime.TryParse(objCliente.dataAlteracao.ToString(),out dataAtual);
+                
+
+                var parametrosPassado = new Dictionary<string, object>() { {"@nomeFantasia", objCliente.nomeFantasia}, {"@apelidoRazao", objCliente.apelidoRazao},
+                                                                           {"@cpfCnpj", objCliente.cpfCnpj}, {"@rgIE", objCliente.rgIE},
+                                                                           {"@telefone", objCliente.telefone}, {"@celular", objCliente.celular},
+                                                                           {"@email", objCliente.email}, {"@dataAlteracao", dataAtual},
+                                                                           {"@id", objCliente.id} };
+
+                string sql = $@"update cliente set nomeFantasia = @nomeFantasia, apelidoRazao = @apelidoRazao, cpfCnpj = @cpfCnpj, rgIE = @rgIE,
+                   telefone = @telefone, celular = @celular, email = @email, dataAlteracao = @dataAlteracao
+                   where id = @id";
+
+                var resultCliente = connection.Query(sql, parametrosPassado);
+
+            }
+            catch(Exception ex)
+            {
+                erro = "Erro para atualizar cliente! " + ex;
+            }
+        }
+
+        public void DeletarCliente(SqlConnection connection, int parametro, out string erro)
+        {
+            erro = string.Empty;
+            try
+            {
+                if (parametro <= 0)
+                {
+                    erro = "Id informada é inválida";
+                    return;
+                }
+                connection.Query($"delete from cliente where id = {parametro}");
+
+            }
+            catch (Exception ex)
+            {
+                erro = "Erro ao deletar cliente! " + ex;
+            }
+        }
 
     }
 }
