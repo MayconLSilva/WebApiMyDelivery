@@ -169,5 +169,29 @@ namespace WebAPIMyDelivery
             }
         }
 
+        public List<ModelCliente> ClientePorID(SqlConnection connection, int parametro, out string erro)
+        {
+            var resultClientes = (dynamic)null;
+            erro = string.Empty;
+
+            try
+            {
+                string consultaSQL = "";
+
+                consultaSQL = $"select *from cliente where id = {parametro}";
+
+                resultClientes = connection.Query<ModelCliente>(consultaSQL);                
+
+            }
+            catch(Exception ex)
+            {
+                erro = "Erro ao buscar cliente pela id! " + ex.Message;
+            }
+
+            return (List<ModelCliente>)resultClientes;
+
+        }
+
+
     }
 }

@@ -37,18 +37,26 @@ namespace WebAPIMyDelivery
         //    }
         //}
 
-        [HttpGet("detalhes/{parametro}/{parametro2}")]
-        public IEnumerable<ModelCliente> GetClienteID(string parametro, string parametro2)
+        [HttpGet("{parametro}")]
+        public IActionResult GetClienteID(string parametro)
         {
-            using (SqlConnection conexao = new SqlConnection(
-            _config.GetConnectionString("DefaultConnection")))
+            try
             {
-                return conexao.Query<ModelCliente>(
-                $"select *from cliente where id = {parametro}");
+                using (SqlConnection conexao = new SqlConnection(
+                _config.GetConnectionString("DefaultConnection")))
+                {
+                    var resultCliente = clienteBLL.ClientePorID(conexao, int.Parse(parametro), out string erro);
 
-
-                //return conexao.Get<ModelCliente>(parametro);
+                    if (erro == "")
+                        return Ok(resultCliente);
+                    else
+                        return BadRequest(erro);
+                }
             }
+            catch(Exception ex)
+            {
+                return StatusCode(500, "Erro de conexão com o servidor! " + ex);
+            }            
         }
 
 
