@@ -46,22 +46,18 @@ namespace WebAPIMyDelivery
             {
                 using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
                 {
-                    try
-                    {
-                        var resultClientes = clienteBLL.InserirCliente(connection, objCliente, out string erro);
+                   var resultClientes = clienteBLL.InserirCliente(connection, objCliente, out string erro);
 
+                    if (erro == "")
                         return Ok(resultClientes);
 
-                    }
-                    catch (Exception ex)
-                    {
-                        return StatusCode(500, ex);
-                    }
+                    else
+                        return BadRequest(erro);                                    
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex);
+                return StatusCode(500, "Erro de conexão com o servidor! " + ex);
             }            
         }
         

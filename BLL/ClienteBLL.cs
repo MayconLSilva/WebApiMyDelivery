@@ -98,6 +98,7 @@ namespace WebAPIMyDelivery
         public int InserirCliente(SqlConnection connection, ModelCliente objCliente, out string erro)
         {
             erro = string.Empty;
+            Int32 idRetorno = 0;
 
             try
             {
@@ -114,16 +115,16 @@ namespace WebAPIMyDelivery
                                                                                                    { "@celular", objCliente.celular.ToString() },
                                                                                                    { "@email", objCliente.email.ToString() },
                                                                                                    { "@dataCadastro", objCliente.dataCadastro.Value.Date } });
-                Int32 idRetorno = Convert.ToInt32(resultClientes.Single());                
-
-                return idRetorno;
+                idRetorno = Convert.ToInt32(resultClientes.Single());                 
 
             }
             catch(Exception ex)
             {
                 erro = "Erro ao inserir cliente! " + ex;
-                return 0;
             }
+
+            return idRetorno;
+
         }
 
         public void AtualizarCliente(SqlConnection connection, int parametro ,ModelCliente objCliente, out string erro)
