@@ -142,35 +142,6 @@ namespace WebAPIMyDelivery
             }
         }
 
-        [HttpGet("address/all")]
-        public IActionResult RetornaListaClientesComplementar()
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-                {
-                    var retultClientes = clienteBLL.RetornaListaClientesEndereco(connection, null, null, out string erros);
-
-                    if (erros == "")
-                    {
-                        if (retultClientes == null || retultClientes.Count == 0)
-                            return NoContent();
-
-                        else
-                            return Ok(retultClientes);
-                    }
-
-                    else
-                        return BadRequest(erros);
-                }                    
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Erro de conexão com o servidor! " + ex);
-
-            }
-        }
-
         [HttpGet("all")]
         public IActionResult RetornaListaClientes()
         {
@@ -190,6 +161,37 @@ namespace WebAPIMyDelivery
             catch (Exception ex)
             {
                 return StatusCode(500, "Erro ao conectar ao servidor! " + ex);//StatusCode((int)HttpStatusCode.InternalServerError, ex);
+            }
+        }
+
+        [HttpGet("Date/{parametro}")]
+        public IActionResult RetornaListaClientesPorDataCadastroAlteracao(DateTime parametro)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
+                {
+                    var resultClientes = clienteBLL.RetornaListaClientes(connection, null, parametro, out string erros);
+
+                    if (erros != "")
+                        return BadRequest(erros);
+                    
+                    else
+                    {
+                        if(resultClientes.Count == 0 || resultClientes == null)
+                        {
+                            return NoContent();
+                        }
+                        else
+                        {
+                            return Ok(resultClientes);
+                        }                        
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro ao conectar ao servidor! " +  ex);
             }
         }
 
@@ -246,38 +248,34 @@ namespace WebAPIMyDelivery
             }
         }
 
-        [HttpGet("Date/{parametro}")]
-        public IActionResult RetornaListaClientesPorDataCadastroAlteracao(DateTime parametro)
+        [HttpGet("address/all")]
+        public IActionResult RetornaListaClientesComplementar()
         {
             try
             {
                 using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
                 {
-                    try
-                    {
-                        var resultClientes = clienteBLL.RetornaListaClientes(connection, null, parametro, out string erros);
+                    var retultClientes = clienteBLL.RetornaListaClientesEndereco(connection, null, null, out string erros);
 
-                        if (resultClientes == null)
-                        {
+                    if (erros == "")
+                    {
+                        if (retultClientes == null || retultClientes.Count == 0)
                             return NoContent();
-                        }
-                        else
-                        {
-                            return Ok(resultClientes);
-                        }
 
+                        else
+                            return Ok(retultClientes);
                     }
-                    catch (Exception ex)
-                    {
-                        return StatusCode(500, ex);
-                    }
+
+                    else
+                        return BadRequest(erros);
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex);
+                return StatusCode(500, "Erro de conexão com o servidor! " + ex);
 
             }
         }
+
     }
 }
