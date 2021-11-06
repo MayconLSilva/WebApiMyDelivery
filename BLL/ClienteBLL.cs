@@ -120,7 +120,7 @@ namespace WebAPIMyDelivery
             }
             catch(Exception ex)
             {
-                erro = "Erro ao inserir cliente! " + ex;
+                erro = "Erro ao inserir cliente! " + ex.Message;
             }
 
             return idRetorno;
@@ -151,7 +151,7 @@ namespace WebAPIMyDelivery
             }
             catch(Exception ex)
             {
-                erro = "Erro para atualizar cliente! " + ex;
+                erro = "Erro para atualizar cliente! " + ex.Message;
             }
         }
 

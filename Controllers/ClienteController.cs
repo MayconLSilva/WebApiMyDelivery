@@ -68,22 +68,18 @@ namespace WebAPIMyDelivery
             {
                 using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
                 {
-                    try
-                    {
-                        clienteBLL.AtualizarCliente(connection, parametro,objCliente, out string erro);
+                    clienteBLL.AtualizarCliente(connection, parametro,objCliente, out string erro);
 
+                    if (erro == "")
                         return Ok();
 
-                    }
-                    catch (Exception ex)
-                    {
-                        return StatusCode(500, ex);
-                    }
+                    else
+                        return BadRequest(erro);
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex);
+                return StatusCode(500, "Erro para acessar o servidor! " + ex);
             }
         }
 
@@ -94,20 +90,14 @@ namespace WebAPIMyDelivery
             {
                 using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
                 {
-                    try
-                    {
-                        clienteBLL.DeletarCliente(connection, parametro, out string erro);
+                    clienteBLL.DeletarCliente(connection, parametro, out string erro);
 
-                        if (erro == "")
-                            return Ok();
-                        else
-                            return BadRequest(erro);
+                    if (erro == "")
+                        return Ok();
+                    
+                    else
+                        return BadRequest(erro);
 
-                    }
-                    catch (Exception ex)
-                    {
-                        return StatusCode(500, ex);
-                    }
                 }
             }
             catch (Exception ex)
