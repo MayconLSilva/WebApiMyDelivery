@@ -178,30 +178,18 @@ namespace WebAPIMyDelivery
             {
                 using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
                 {
-                    try
-                    {
-                        var resultClientes = connection.Query<ModelCliente>("select *from cliente");
+                    var resultClientes = connection.Query<ModelCliente>("select *from cliente");
 
-                        if (resultClientes == null)
-                        {
-                            return NoContent();
-                        }
-                        else
-                        {
-                            return Ok(resultClientes);
-                        }
+                    if (resultClientes == null)
+                        return NoContent();
 
-                    }
-                    catch (Exception ex)
-                    {
-                        return StatusCode(500, ex);
-                    }
+                    else
+                        return Ok(resultClientes);                    
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex);//StatusCode((int)HttpStatusCode.InternalServerError, ex);
-
+                return StatusCode(500, "Erro ao conectar ao servidor! " + ex);//StatusCode((int)HttpStatusCode.InternalServerError, ex);
             }
         }
 
