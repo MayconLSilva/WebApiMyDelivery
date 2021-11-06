@@ -16,7 +16,8 @@ namespace WebAPIMyDelivery
 
         public List<ModelCliente> RetornaListaClientes(SqlConnection connection, int? vendedor, DateTime? dataCadastroAlteracao, out string erros)
         {
-            erros = string.Empty;            
+            erros = string.Empty;
+            var resultClientes = (dynamic)null;
 
             try
             {
@@ -36,17 +37,15 @@ namespace WebAPIMyDelivery
                                    left join vendedoresCliente v on c.id = v.idCliente
                                    where 1 = 1  {filtrosConsultaSQL}";
                 
-                var resultClientes = connection.Query<ModelCliente>($"{consultaSQL}");
-                
-
-                return (List<ModelCliente>)resultClientes;
+                resultClientes = connection.Query<ModelCliente>($"{consultaSQL}");
 
             }
             catch (Exception ex)
             {
-               erros = ex.Message;
-               return null;
+               erros = ex.Message;               
             }
+
+            return (List<ModelCliente>)resultClientes;
         }
 
         public List<ModelCliente> RetornaListaClientesEndereco(SqlConnection connection, int? vendedor, DateTime? dataCadastroAlteracao,out string erro)

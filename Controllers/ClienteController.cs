@@ -200,30 +200,23 @@ namespace WebAPIMyDelivery
             {
                 using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
                 {
-                    try
-                    {
-                        var resultClientes = clienteBLL.RetornaListaClientes(connection, parametro, null, out string erros);
+                   var resultClientes = clienteBLL.RetornaListaClientes(connection, parametro, null, out string erros);
 
-                        if (resultClientes == null)
-                        {
+                    if (erros != "")
+                        return BadRequest("Erro ao buscar clientes por vendedor! " + erros);
+
+                    else
+                    {
+                        if (resultClientes.Count == 0 || resultClientes == null)
                             return NoContent();
-                        }
                         else
-                        {
                             return Ok(resultClientes);
-                        }
-
-                    }
-                    catch (Exception ex)
-                    {
-                        return StatusCode(500, ex);
-                    }
+                    }   
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex);
-
+                return StatusCode(500, "Erro ao conectar ao servidor! " +  ex);
             }
         }
 
