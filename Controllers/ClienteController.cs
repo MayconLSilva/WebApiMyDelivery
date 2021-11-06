@@ -174,7 +174,7 @@ namespace WebAPIMyDelivery
                     var resultClientes = clienteBLL.RetornaListaClientes(connection, null, parametro, out string erros);
 
                     if (erros != "")
-                        return BadRequest(erros);
+                        return BadRequest("Erro ao buscar cliente pelo vendedor!" + erros);
                     
                     else
                     {
