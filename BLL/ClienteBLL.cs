@@ -49,8 +49,11 @@ namespace WebAPIMyDelivery
             }
         }
 
-        public List<ModelCliente> RetornaListaClientesEndereco(SqlConnection connection, int? vendedor, DateTime? dataCadastroAlteracao)
+        public List<ModelCliente> RetornaListaClientesEndereco(SqlConnection connection, int? vendedor, DateTime? dataCadastroAlteracao,out string erro)
         {
+            erro = string.Empty;
+            var resultClientes = (dynamic)null;
+
             try
             {
                 string consultaSQL = "";
@@ -75,20 +78,22 @@ namespace WebAPIMyDelivery
 	                            where 1 = 1
                                 {filtrosConsultaSQL} ";
 
-                var resultClientes = connection.Query<dynamic>($"{consultaSQL}");
+                var chamadaPrincipal = connection.Query<dynamic>($"{consultaSQL}");
 
                 AutoMapper.Configuration.AddIdentifier(typeof(ModelCliente), "id");
                 AutoMapper.Configuration.AddIdentifier(typeof(ModelEnderecoCliente), "idEndereco");
 
-                List<ModelCliente> clientes = (AutoMapper.MapDynamic<ModelCliente>(resultClientes) as IEnumerable<ModelCliente>).ToList();
-
-                return clientes;
+                List<ModelCliente> mapeamento = (AutoMapper.MapDynamic<ModelCliente>(chamadaPrincipal) as IEnumerable<ModelCliente>).ToList();
+                
+                resultClientes = mapeamento;
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return null;
+                erro = "Erro ao buscar cliente com endereço! " + ex.Message;
             }
+
+            return resultClientes;
         }
         
         public int InserirCliente(SqlConnection connection, ModelCliente objCliente, out string erro)

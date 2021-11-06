@@ -37,29 +37,7 @@ namespace WebAPIMyDelivery
         //    }
         //}
 
-        [HttpGet("{parametro}")]
-        public IActionResult GetClienteID(string parametro)
-        {
-            try
-            {
-                using (SqlConnection conexao = new SqlConnection(
-                _config.GetConnectionString("DefaultConnection")))
-                {
-                    var resultCliente = clienteBLL.ClientePorID(conexao, int.Parse(parametro), out string erro);
-
-                    if (erro == "")
-                        return Ok(resultCliente);
-                    else
-                        return BadRequest(erro);
-                }
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500, "Erro de conexão com o servidor! " + ex);
-            }            
-        }
-
-
+        
 
         [HttpPost("insert")]
         public IActionResult InserirCliente(ModelCliente objCliente)
@@ -142,6 +120,28 @@ namespace WebAPIMyDelivery
             }
         }
 
+        [HttpGet("{parametro}")]
+        public IActionResult GetClienteID(string parametro)
+        {
+            try
+            {
+                using (SqlConnection conexao = new SqlConnection(
+                _config.GetConnectionString("DefaultConnection")))
+                {
+                    var resultCliente = clienteBLL.ClientePorID(conexao, int.Parse(parametro), out string erro);
+
+                    if (erro == "")
+                        return Ok(resultCliente);
+                    else
+                        return BadRequest(erro);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Erro de conexão com o servidor! " + ex);
+            }
+        }
+
         [HttpGet("address/all")]
         public IActionResult RetornaListaClientesComplementar()
         {
@@ -149,29 +149,24 @@ namespace WebAPIMyDelivery
             {
                 using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
                 {
-                    try
-                    {                        
-                        var retultClientes = clienteBLL.RetornaListaClientesEndereco(connection, null, null);
+                    var retultClientes = clienteBLL.RetornaListaClientesEndereco(connection, null, null, out string erros);
 
-                        if (retultClientes == null || retultClientes.Count == 0)
-                        {
-                            return NoContent();
-                        }
-                        else
-                        {
-                            return Ok(retultClientes);
-                        }
-
-                    }
-                    catch (Exception ex)
+                    if (erros == "")
                     {
-                        return StatusCode(500,ex);
+                        if (retultClientes == null || retultClientes.Count == 0)
+                            return NoContent();
+
+                        else
+                            return Ok(retultClientes);
                     }
-                }
+
+                    else
+                        return BadRequest(erros);
+                }                    
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex);
+                return StatusCode(500, "Erro de conexão com o servidor! " + ex);
 
             }
         }
