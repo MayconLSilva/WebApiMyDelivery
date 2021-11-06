@@ -24,37 +24,25 @@ namespace WebAPIMyDelivery.Controllers
         [HttpGet("{login}/{senha}")]
         public IActionResult GetLogin(string login, string senha)
         {
-            string senhaRetornada = "";
-
             try
             {
                 using (SqlConnection conexao = new SqlConnection(
                 _config.GetConnectionString("DefaultConnection")))
                 {
-                    var resultCliente = vendedorbll.getLogin(conexao, login, out string erro);
+                    var resultUsuarioVendedor = vendedorbll.GetLoginUsuarioVendedor(conexao, login, out string erro);
 
-                    if (resultCliente.Count == 0)
-                        return NotFound();
-
-                    else
+                    if(erro == "")
                     {
-                        foreach(ModelVendedorUsuario item in resultCliente)
-                        {
-                            senhaRetornada = item.senha;
-                        }
-
-                        if (senha != senhaRetornada)
-                            return BadRequest("Senha não corresponde, verifique! ");
+                        if (senha != resultUsuarioVendedor.senha)
+                            return BadRequest("Senhas não coincidem");
 
                         else
-                            return Ok(resultCliente);
+                            return Ok(resultUsuarioVendedor);
                     }
-
-
-
-                    //var senhaRetornada = resultCliente.First(x => x.login.Equals(login)).senha.ToString();
-
-                   // var teste2 = (from item in resultCliente where item.login.Equals(login) select item.senha).First();
+                    else
+                    {
+                        return NoContent();
+                    }
 
                     
                 }

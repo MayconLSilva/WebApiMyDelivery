@@ -14,7 +14,7 @@ namespace WebAPIMyDelivery
 {
     public class VendedorBLL
     {
-        public List<ModelVendedorUsuario> getLogin(SqlConnection connection, string login, out string erro)
+        public ModelVendedorUsuario GetLoginUsuarioVendedor(SqlConnection connection, string login, out string erro)
         {
             var resultLogin = (dynamic)null;
             erro = string.Empty;
@@ -25,7 +25,7 @@ namespace WebAPIMyDelivery
 
                 consultaSQL = $"select *from vendedor where login = '{login}'";
 
-                resultLogin = connection.Query<ModelVendedorUsuario>(consultaSQL);
+                resultLogin = connection.QueryFirst<ModelVendedorUsuario>(consultaSQL);
 
             }
             catch (Exception ex)
@@ -33,7 +33,7 @@ namespace WebAPIMyDelivery
                 erro = "Erro ao buscar login ! " + ex.Message;
             }
 
-            return (List<ModelVendedorUsuario>)resultLogin;
+            return resultLogin;//(List<ModelVendedorUsuario>)
         }
     }
 }
