@@ -17,6 +17,7 @@ namespace WebAPIMyDelivery
     public class ClienteController : Controller
     {
         ClienteBLL clienteBLL = new ClienteBLL();
+        Util util = new Util();
 
         private IConfiguration _config;
         public ClienteController(IConfiguration configuration)
@@ -135,6 +136,12 @@ namespace WebAPIMyDelivery
             {
                 using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
                 {
+
+                    var RequesID = Request.Headers.TryGetValue("x-api-key", out var value);
+                    util.validaEmpresa(connection,value, out string erro);
+                    if(erro != "")
+                        return BadRequest(erro);
+
                     var resultClientes = connection.Query<ModelCliente>("select *from cliente");
 
                     if (resultClientes == null)
