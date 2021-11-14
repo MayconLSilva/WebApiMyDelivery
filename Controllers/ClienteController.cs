@@ -62,7 +62,7 @@ namespace WebAPIMyDelivery
             }            
         }
         
-        [HttpPut("update/{parametro}")]
+        [HttpPut("update/{parametro:int}")]
         public IActionResult AtualizaCliente(int parametro,ModelCliente objCliente)
         {
             try
@@ -130,25 +130,36 @@ namespace WebAPIMyDelivery
         }
 
         [HttpGet("all")]
-        public IActionResult RetornaListaClientes()
+        public IActionResult RetornaListaClientes(
+            [FromQuery] int skip = 0,
+            [FromQuery] int take = 25)
         {
             try
             {
                 using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
                 {
-
+                   
                     var RequesID = Request.Headers.TryGetValue("x-api-key", out var value);
                     util.validaEmpresa(connection,value, out string erro);
                     if(erro != "")
                         return BadRequest(erro);
 
-                    var resultClientes = connection.Query<ModelCliente>("select *from cliente");
+                    
+
+                    var resultClientes = connection.Query<ModelCliente>("select *from cliente")
+                                                                        .Skip(skip)
+                                                                        .Take(take);
+
+                    var qtdRegistros = connection.Query<ModelCliente>("select *from cliente").Count();
 
                     if (resultClientes == null)
                         return NoContent();
 
                     else
-                        return Ok(resultClientes);                    
+                        return Ok(new {
+                            qtdRegistros,
+                            listaClientes = resultClientes 
+                        });                    
                 }
             }
             catch (Exception ex)
