@@ -146,11 +146,11 @@ namespace WebAPIMyDelivery
 
                     
 
-                    var resultClientes = connection.Query<ModelCliente>("select *from cliente")
+                    var resultClientes = connection.Query<ModelCliente>("select *from participante")
                                                                         .Skip(skip)
                                                                         .Take(take);
 
-                    var qtdRegistros = connection.Query<ModelCliente>("select *from cliente").Count();
+                    var qtdRegistros = connection.Query<ModelCliente>("select *from participante").Count();
 
                     if (resultClientes == null)
                         return NoContent();

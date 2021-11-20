@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebAPIMyDelivery
 {
-    [Table("enderecosCliente")]
+    [Table("enderecosParticipante")]
     public class ModelEnderecoCliente
     {
         //[DisplayFormat(DataFormatString = "mm/dd/yyyy")]

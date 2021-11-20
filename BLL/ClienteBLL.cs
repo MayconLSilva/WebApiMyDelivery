@@ -33,7 +33,7 @@ namespace WebAPIMyDelivery
                                     
                 consultaSQL = $@"set dateformat dmy 
                                  select c.id, c.nomeFantasia, c.apelidoRazao, c.cpfCnpj, c.rgIE, c.telefone, c.celular, c.email, c.dataCadastro, c.dataAlteracao 
-                                 from cliente c
+                                 from participante c
                                    left join vendedoresCliente v on c.id = v.idCliente
                                    where 1 = 1  {filtrosConsultaSQL}";
                 
@@ -71,8 +71,8 @@ namespace WebAPIMyDelivery
 	                            ec.bairro as Enderecos_bairro, ec.cep as Enderecos_cep, ec.complemento as Enderecos_complemento, 
 	                            ec.principal as Enderecos_principal, ec.idCliente as Enderecos_idCliente, 
 	                            ec.cidade as Enderecos_cidade
-	                            from cliente c
-	                            inner join enderecosCliente ec on ec.idCliente = c.id
+	                            from participante c
+	                            inner join enderecosParticipante ec on ec.idCliente = c.id
                                 left join vendedoresCliente v on c.id = v.idCliente
 	                            where 1 = 1
                                 {filtrosConsultaSQL} ";
@@ -102,7 +102,7 @@ namespace WebAPIMyDelivery
 
             try
             {
-                string sql = $@"insert into cliente (nomeFantasia,apelidoRazao,cpfCnpj,rgIE,telefone,celular,email,dataCadastro)
+                string sql = $@"insert into participante (nomeFantasia,apelidoRazao,cpfCnpj,rgIE,telefone,celular,email,dataCadastro)
                                                                 values (@nomeFantasia, @apelidoRazao, @cpfCnpj, @rgIE, @telefone, @celular, @email, @dataCadastro);
                                                                 SELECT CAST(SCOPE_IDENTITY() as int) ";
 
@@ -142,7 +142,7 @@ namespace WebAPIMyDelivery
                                                                            {"@email", objCliente.email}, {"@dataAlteracao", dataAtual},
                                                                            {"@id", objCliente.id} };
 
-                string sql = $@"update cliente set nomeFantasia = @nomeFantasia, apelidoRazao = @apelidoRazao, cpfCnpj = @cpfCnpj, rgIE = @rgIE,
+                string sql = $@"update participante set nomeFantasia = @nomeFantasia, apelidoRazao = @apelidoRazao, cpfCnpj = @cpfCnpj, rgIE = @rgIE,
                    telefone = @telefone, celular = @celular, email = @email, dataAlteracao = @dataAlteracao
                    where id = @id";
 
@@ -165,7 +165,7 @@ namespace WebAPIMyDelivery
                     erro = "Id informada é inválida";
                     return;
                 }
-                connection.Query($"delete from cliente where id = {parametro}");
+                connection.Query($"delete from participante where id = {parametro}");
 
             }
             catch (Exception ex)
@@ -183,7 +183,7 @@ namespace WebAPIMyDelivery
             {
                 string consultaSQL = "";
 
-                consultaSQL = $"select *from cliente where id = {parametro}";
+                consultaSQL = $"select *from participante where id = {parametro}";
 
                 resultClientes = connection.Query<ModelCliente>(consultaSQL);                
 

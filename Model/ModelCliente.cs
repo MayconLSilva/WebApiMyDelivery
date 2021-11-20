@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 
 namespace WebAPIMyDelivery
 {
-    [Table("Cliente")]
+    [Table("Participante")]
     public class ModelCliente
     {        
         [Key]
