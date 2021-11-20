@@ -60,6 +60,41 @@ namespace WebAPIMyDelivery
             }
         }
 
+        public void Autenticacao(string loginRecebido, string senhaRecebida, SqlConnection connection, out string erro)
+        {
+            erro = string.Empty;
 
+            try
+            {
+                string consultaSQL = "";
+                consultaSQL = $"select *from vendedor where login = '{loginRecebido}'";
+
+                var resultLogin = connection.Query<ModelVendedorUsuario>(consultaSQL);
+
+                if (resultLogin.Count() == 0)
+                {
+                    erro = "Login não encontrado, por favor validar! ";
+                    return;
+                }
+                else 
+                {
+                    int registro = resultLogin.AsEnumerable().Where(x => x.senha == senhaRecebida).Count();
+                    if(registro == 0)
+                    {
+                        erro = "Senha não coencidem! ";
+                        return;
+                    }
+                    else
+                    {
+                        var result = resultLogin.AsEnumerable().First(x => x.senha == senhaRecebida).role.ToString();
+                        erro = result;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                erro = " " + ex.Message;
+            }
+        }
     }
 }
