@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using Slapper;
+using Microsoft.AspNetCore.Authorization;
 //using System.Web.Http;
 
 namespace WebAPIMyDelivery
@@ -108,6 +109,7 @@ namespace WebAPIMyDelivery
         }
 
         [HttpGet("{parametro}")]
+        [Authorize]
         public IActionResult GetClienteID(string parametro)
         {
             try

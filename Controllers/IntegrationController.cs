@@ -41,6 +41,7 @@ namespace WebAPIMyDelivery
 
                 else
                 {
+                    model.role = erro;
                     var token = TokenService.GenerateToken(model);
                     model.senha = "";
 
