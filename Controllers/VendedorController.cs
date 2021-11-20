@@ -52,5 +52,30 @@ namespace WebAPIMyDelivery.Controllers
                 return StatusCode(500, "Erro de conexão com o servidor! " + ex);
             }
         }
+
+        [HttpPost("insereLogin")]
+        public IActionResult InsertLogin(ModelVendedorUsuario modelVendedor)
+        {            
+            try
+            {
+                using (SqlConnection conexao = new SqlConnection(
+                _config.GetConnectionString("DefaultConnection")))
+                {
+
+                    vendedorbll.insereVendedorUsuario(conexao, modelVendedor, out string erro);
+
+                    if (erro.Contains("Erro"))
+                        return BadRequest(" " + erro);
+
+                    else
+                        return Ok(erro);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Erro para conectar ao servidor! " + ex.Message);
+
+            }
+        }
     }
 }
